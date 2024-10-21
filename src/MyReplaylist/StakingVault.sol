@@ -1,11 +1,13 @@
 // SPDX-License-Identifier: MIT
 
 pragma solidity 0.8.15;
+
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
 contract StakingVault {
     using ECDSA for bytes32;
+
     IERC20 token;
 
     constructor(address _token) {
@@ -24,14 +26,9 @@ contract StakingVault {
         _withdraw(msg.sender, to, amount);
     }
 
-    function withdrawWithPermit(
-        address owner,
-        address payable to,
-        uint256 amount,
-        uint8 v,
-        bytes32 r,
-        bytes32 s
-    ) external {
+    function withdrawWithPermit(address owner, address payable to, uint256 amount, uint8 v, bytes32 r, bytes32 s)
+        external
+    {
         bytes32 hash = keccak256(abi.encode(owner, to, amount, nonce[owner]++));
         require(owner == ECDSA.recover(hash.toEthSignedMessageHash(), v, r, s), "StakingVault: Owner not signer");
 

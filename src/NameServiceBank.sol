@@ -44,8 +44,8 @@ contract NAME_SERVICE_BANK {
         require(bytes(newUsername).length + obfuscationDegree <= 31, "Max name size is 31 bytes");
         require(_usernameSubscriptionDuration[1] <= block.timestamp, "Start time must be now or earlier");
         require(
-            _usernameSubscriptionDuration[0] > _usernameSubscriptionDuration[1] &&
-                _usernameSubscriptionDuration[0] > block.timestamp,
+            _usernameSubscriptionDuration[0] > _usernameSubscriptionDuration[1]
+                && _usernameSubscriptionDuration[0] > block.timestamp,
             "Invalid subscription end"
         );
 
@@ -79,17 +79,15 @@ contract NAME_SERVICE_BANK {
         // set new username as used name
         isUsedUsername[usernameOf[msg.sender]] = true;
         // set subscription duration of new name
-        usernameSubscriptionDuration[_newUsername] = SubscriptionDuration({
-            end: _usernameSubscriptionDuration[0],
-            start: _usernameSubscriptionDuration[1]
-        });
+        usernameSubscriptionDuration[_newUsername] =
+            SubscriptionDuration({end: _usernameSubscriptionDuration[0], start: _usernameSubscriptionDuration[1]});
 
         // Migrate balance from old username to new username
         _balanceOf[_newUsername] += _balanceOf[lastUsername];
         delete _balanceOf[lastUsername];
 
         // send payment to owner
-        (bool success, ) = payable(owner).call{value: 1 ether}("");
+        (bool success,) = payable(owner).call{value: 1 ether}("");
         require(success, "payment failed");
     }
 
@@ -98,7 +96,7 @@ contract NAME_SERVICE_BANK {
         require(amount <= _balanceOf[cacheUsername], "insufficient balance");
         _balanceOf[cacheUsername] -= amount;
 
-        (bool success, ) = payable(msg.sender).call{value: amount}("");
+        (bool success,) = payable(msg.sender).call{value: amount}("");
         require(success, "withdraw failed");
     }
 

@@ -104,7 +104,7 @@ contract Governance {
 
     function executeProposal(uint256 proposal) external {
         require(proposals[proposal].votes >= 10, "Not enough votes");
-        (bool res, ) = address(communityWallet).call(proposals[proposal].data);
+        (bool res,) = address(communityWallet).call(proposals[proposal].data);
         require(res, "call failed");
     }
 }
@@ -118,7 +118,7 @@ contract CommunityWallet {
 
     function exec(address target, bytes calldata data, uint256 value) external {
         require(msg.sender == governance, "Caller is not governance contract");
-        (bool res, ) = target.call{value: value}(data);
+        (bool res,) = target.call{value: value}(data);
         require(res, "call failed");
     }
 
